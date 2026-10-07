@@ -1,0 +1,4 @@
+tuf-site-deploy.tar.gz
+*.tar.gz
+.DS_Store
+Thumbs.db

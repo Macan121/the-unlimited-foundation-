@@ -1,94 +1,90 @@
 const projects = [
   {
     slug: "tnfa",
-    name: "The New Frontier Africa Leadership Summit",
-    shortName: "TNFA",
-    summary:
-      "A leadership summit identified by the PRD as a TUF initiative with a dedicated website in development.",
-    status: "Dedicated site link pending",
-    audience: "Emerging leaders and programme participants",
-    activities: [
-      "Leadership-focused convening",
-      "Participant registration through the approved TNFA destination",
-      "Clear reciprocal link between TUF and TNFA",
+    name: "The New Frontier Africa",
+    kicker: "Leadership",
+    summary: "Developing leaders for a stronger, more inclusive Africa.",
+    imageClass: "slice-leadership",
+    imageAlt: "A mentor speaking with young adults in a leadership discussion",
+    detailTitle: "The New Frontier Africa Leadership Summit",
+    detail:
+      "The New Frontier Africa Leadership Summit is presented as a TUF initiative with its own dedicated website journey. TUF remains the foundation home while TNFA carries its programme identity.",
+    points: [
+      "Leadership-focused initiative under The Unlimited Foundation.",
+      "Dedicated TNFA website link can be added when the approved URL is available.",
+      "Registration and programme details should remain on the approved TNFA destination.",
     ],
-    action: "View TNFA Relationship",
   },
   {
     slug: "tech-academy",
     name: "TUF Tech Academy",
-    shortName: "Tech",
-    summary:
-      "A skills initiative reserved for approved technology training details, eligibility, and delivery model.",
-    status: "Programme facts pending",
-    audience: "Learners seeking practical technology skills",
-    activities: [
-      "Training offer to be confirmed",
-      "Eligibility and cost to be approved",
-      "Application route to be enabled when live",
+    kicker: "Technology",
+    summary: "Building digital skills and opportunities for tomorrow.",
+    imageClass: "slice-tech",
+    imageAlt: "Students working on laptops in a learning environment",
+    detailTitle: "TUF Tech Academy",
+    detail:
+      "TUF Tech Academy is the foundation's technology skills pathway. Public course details can be expanded as training offers, eligibility, dates, and participation routes are confirmed.",
+    points: [
+      "Technology training and digital skills focus.",
+      "Programme availability and delivery model can be added when confirmed.",
+      "Participant enquiries route through the TUF contact journey.",
     ],
-    action: "View Programme Readiness",
   },
   {
-    slug: "music-and-arts",
-    name: "Music and Arts",
-    shortName: "Arts",
-    summary:
-      "A creative initiative that will describe approved music, arts, mentorship, or performance activities.",
-    status: "Activity details pending",
-    audience: "Creative participants and community supporters",
-    activities: [
-      "Approved creative activities pending",
-      "Media and participant permissions required",
-      "Support needs to be confirmed before launch",
+    slug: "music-arts",
+    name: "Music & Arts",
+    kicker: "Music & Arts",
+    summary: "Nurturing creative talent and cultural expression.",
+    imageClass: "slice-arts",
+    imageAlt: "A young musician practicing guitar in a creative setting",
+    detailTitle: "Music & Arts",
+    detail:
+      "Music & Arts gives TUF room to support creative expression, cultural confidence, and practical artistic development through approved activities.",
+    points: [
+      "Creative expression and talent development.",
+      "Activities can include approved music, arts, mentorship, or showcases.",
+      "Participant images and stories should be published only with permission.",
     ],
-    action: "View Creative Scope",
   },
   {
     slug: "smiling-children",
     name: "Smiling Children Project",
-    shortName: "SCP",
-    summary:
-      "A child-focused support initiative that should protect beneficiary privacy while explaining approved support needs.",
-    status: "Safeguarding review required",
-    audience: "Children, families, donors, and safeguarding reviewers",
-    activities: [
-      "Purpose and support model to be approved",
-      "No sensitive beneficiary details exposed publicly",
-      "Child-related content requires safeguarding review",
+    kicker: "Children & Community",
+    summary: "Supporting brighter futures for children and communities.",
+    imageClass: "slice-children",
+    imageAlt: "Children smiling in a community setting",
+    detailTitle: "Smiling Children Project",
+    detail:
+      "Smiling Children Project is TUF's child-focused community support initiative. The public site keeps the purpose visible while avoiding sensitive beneficiary details.",
+    points: [
+      "Child-focused support within the TUF family of initiatives.",
+      "Public content should protect beneficiary dignity and privacy.",
+      "Support needs can be added after TUF confirms the programme model.",
     ],
-    action: "View Safeguarding Notes",
   },
 ];
 
 const stories = [
   {
     category: "Graduates",
-    title: "Graduate outcomes",
-    summary:
-      "Approved graduate stories will describe the starting point, TUF contribution, and outcome.",
-    project: "Related project to be selected",
+    title: "Graduates",
+    summary: "Stories about learners completing a programme and moving into their next opportunity.",
   },
   {
     category: "Business Owners",
-    title: "Business owner progress",
-    summary:
-      "Business stories should include permission, attribution, and privately recorded evidence.",
-    project: "Related project to be selected",
+    title: "Business Owners",
+    summary: "Narratives from entrepreneurs and community builders shaped by TUF support.",
   },
   {
     category: "Tech Innovators",
-    title: "Technology innovation stories",
-    summary:
-      "Tech innovator narratives will connect training or support to a verified public outcome.",
-    project: "TUF Tech Academy",
+    title: "Tech Innovators",
+    summary: "Technology pathways connected to training, practice, and practical outcomes.",
   },
   {
     category: "Skill Merchants",
     title: "Skill Merchants",
-    summary:
-      "The category is preserved from the PRD while TUF confirms the preferred public wording.",
-    project: "Category wording pending",
+    summary: "A working story category ready for TUF's preferred public wording and examples.",
   },
 ];
 
@@ -98,23 +94,23 @@ const dialog = document.querySelector("[data-dialog]");
 const dialogContent = document.querySelector("[data-dialog-content]");
 const header = document.querySelector("[data-header]");
 const menuToggle = document.querySelector(".menu-toggle");
+const menu = document.querySelector("#site-menu");
+let lastFocusedElement = null;
 
 function renderProjects() {
   projectMount.innerHTML = projects
     .map(
       (project) => `
         <article class="project-card">
-          <div>
-            <div class="project-icon" aria-hidden="true">${project.shortName}</div>
+          <div class="card-image image-slice ${project.imageClass}">
+            <img src="assets/programme-montage.png" alt="${project.imageAlt}" loading="lazy" />
+          </div>
+          <div class="card-body">
+            <p class="card-kicker">${project.kicker}</p>
             <h3>${project.name}</h3>
             <p>${project.summary}</p>
-          </div>
-          <div>
-            <div class="card-meta">
-              <span class="pill">${project.status}</span>
-            </div>
             <button class="card-button" type="button" data-project="${project.slug}">
-              ${project.action}
+              Learn more <span aria-hidden="true">-&gt;</span>
             </button>
           </div>
         </article>
@@ -130,22 +126,19 @@ function renderStories(category = "all") {
         .map(
           (story) => `
           <article class="story-card">
-            <div class="card-meta">
-              <span class="pill">${story.category}</span>
-              <span class="pill">${story.project}</span>
-            </div>
+            <p class="pill">${story.category}</p>
             <h3>${story.title}</h3>
             <p>${story.summary}</p>
             <button class="card-button" type="button" data-story="${story.category}">
-              View Story Requirements
+              Story pathway <span aria-hidden="true">-&gt;</span>
             </button>
           </article>
         `,
         )
         .join("")
     : `<article class="story-card empty-state">
-        <h3>No approved stories in this category yet.</h3>
-        <p>When TUF approves a story with consent and evidence, it can appear here.</p>
+        <h3>No stories in this category yet.</h3>
+        <p>When TUF approves a public story for this pathway, it can appear here.</p>
       </article>`;
 }
 
@@ -153,16 +146,16 @@ function showProject(slug) {
   const project = projects.find((item) => item.slug === slug);
   if (!project) return;
 
+  lastFocusedElement = document.activeElement;
   dialogContent.innerHTML = `
     <div class="dialog-body">
-      <p class="eyebrow">Project Detail</p>
-      <h2>${project.name}</h2>
-      <p>${project.summary}</p>
+      <p class="eyebrow">${project.kicker}</p>
+      <h2>${project.detailTitle}</h2>
+      <p>${project.detail}</p>
       <ul class="dialog-list">
-        <li><strong>Audience:</strong> ${project.audience}</li>
-        ${project.activities.map((activity) => `<li>${activity}</li>`).join("")}
+        ${project.points.map((point) => `<li>${point}</li>`).join("")}
       </ul>
-      <a class="button secondary" href="#contact">Enquire About This Project</a>
+      <a class="button secondary" href="#contact">Enquire about this project</a>
     </div>
   `;
   dialog.showModal();
@@ -173,17 +166,18 @@ function showStory(category) {
   const story = stories.find((item) => item.category === category);
   if (!story) return;
 
+  lastFocusedElement = document.activeElement;
   dialogContent.innerHTML = `
     <div class="dialog-body">
-      <p class="eyebrow">Success Story</p>
+      <p class="eyebrow">Success Stories</p>
       <h2>${story.title}</h2>
       <p>${story.summary}</p>
       <ul class="dialog-list">
-        <li>Publication date, attribution, media permission, and evidence reference are required.</li>
-        <li>The narrative should explain the starting point, TUF's contribution, and the outcome.</li>
-        <li>Quantitative claims should have a privately recorded source.</li>
+        <li>Each story can connect to a related TUF initiative.</li>
+        <li>Public attribution and media should be used only with permission.</li>
+        <li>Outcome claims should stay specific and verifiable.</li>
       </ul>
-      <a class="button secondary" href="#contact">Share an Approved Story</a>
+      <a class="button secondary" href="#contact">Share a story with TUF</a>
     </div>
   `;
   dialog.showModal();
@@ -209,19 +203,66 @@ function prepareEmail(form, subjectPrefix) {
     .map(([key, value]) => `${key}: ${value}`);
   const subject = encodeURIComponent(`${subjectPrefix}: ${data.get("name")}`);
   const body = encodeURIComponent(lines.join("\n"));
-  status.innerHTML =
-    `Your enquiry is ready. Add TUF's approved email address before launch, or ` +
-    `<a href="mailto:?subject=${subject}&body=${body}">open this draft in your email app</a>.`;
+  status.innerHTML = `Your enquiry is ready. <a href="mailto:?subject=${subject}&body=${body}">Open it in your email app</a>.`;
+}
+
+function closeMenu() {
+  header.classList.remove("open");
+  document.body.classList.remove("menu-open");
+  menuToggle.setAttribute("aria-expanded", "false");
+}
+
+function openMenu() {
+  header.classList.add("open");
+  document.body.classList.add("menu-open");
+  menuToggle.setAttribute("aria-expanded", "true");
+  menu.querySelector("a")?.focus();
+}
+
+function setupRevealMotion() {
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const revealItems = document.querySelectorAll("[data-reveal]");
+  if (reduced || !("IntersectionObserver" in window)) {
+    revealItems.forEach((item) => item.classList.add("is-visible"));
+    return;
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
+      });
+    },
+    { threshold: 0.16 },
+  );
+  revealItems.forEach((item) => observer.observe(item));
+}
+
+function updateHeader() {
+  header.classList.toggle("is-scrolled", window.scrollY > 8);
+}
+
+function updateParallax() {
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const media = document.querySelector("[data-parallax] img");
+  if (!media || reduced || window.innerWidth < 900) return;
+  const rect = media.getBoundingClientRect();
+  const progress = Math.max(-1, Math.min(1, (rect.top + rect.height / 2 - window.innerHeight / 2) / window.innerHeight));
+  const offset = Math.round(progress * -18);
+  media.style.transform = `translateY(${offset}px) scale(1)`;
 }
 
 renderProjects();
 renderStories();
+setupRevealMotion();
+updateHeader();
 
 document.addEventListener("click", (event) => {
   const projectButton = event.target.closest("[data-project]");
   const storyButton = event.target.closest("[data-story]");
   const filterButton = event.target.closest("[data-filter]");
-  const presetLink = event.target.closest("[data-preset]");
 
   if (projectButton) showProject(projectButton.dataset.project);
   if (storyButton) showStory(storyButton.dataset.story);
@@ -231,11 +272,6 @@ document.addEventListener("click", (event) => {
     filterButton.classList.add("active");
     renderStories(filterButton.dataset.filter);
   }
-
-  if (presetLink) {
-    const select = document.querySelector('[data-form="contact"] select[name="type"]');
-    select.value = presetLink.dataset.preset;
-  }
 });
 
 document.querySelector("[data-close]").addEventListener("click", () => {
@@ -244,24 +280,45 @@ document.querySelector("[data-close]").addEventListener("click", () => {
 
 dialog.addEventListener("close", () => {
   document.body.classList.remove("dialog-open");
+  lastFocusedElement?.focus?.();
 });
 
 menuToggle.addEventListener("click", () => {
-  const isOpen = header.classList.toggle("open");
-  menuToggle.setAttribute("aria-expanded", String(isOpen));
+  if (header.classList.contains("open")) {
+    closeMenu();
+  } else {
+    openMenu();
+  }
 });
 
 document.querySelectorAll(".site-nav a").forEach((link) => {
-  link.addEventListener("click", () => {
-    header.classList.remove("open");
-    menuToggle.setAttribute("aria-expanded", "false");
-  });
+  link.addEventListener("click", closeMenu);
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key !== "Escape") return;
+  if (header.classList.contains("open")) {
+    closeMenu();
+    menuToggle.focus();
+  }
+  if (dialog.open) dialog.close();
 });
 
 document.querySelectorAll("[data-form]").forEach((form) => {
-  const prefix = form.dataset.form === "partner" ? "Partnership enquiry" : "TUF enquiry";
   form.addEventListener("submit", (event) => {
     event.preventDefault();
-    prepareEmail(form, prefix);
+    prepareEmail(form, "TUF enquiry");
   });
 });
+
+window.addEventListener(
+  "scroll",
+  () => {
+    updateHeader();
+    updateParallax();
+  },
+  { passive: true },
+);
+
+window.addEventListener("resize", updateParallax);
+window.addEventListener("load", updateParallax);
