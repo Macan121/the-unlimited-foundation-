@@ -28,6 +28,7 @@ body {
   min-width: 320px;
   color: var(--ink);
   background: var(--white);
+  overflow-x: clip;
 }
 
 body.menu-open,
@@ -130,7 +131,7 @@ textarea {
 .site-nav {
   display: flex;
   align-items: center;
-  gap: clamp(1rem, 2.1vw, 2rem);
+  gap: clamp(0.8rem, 1.45vw, 1.55rem);
   font-weight: 760;
 }
 
@@ -269,7 +270,7 @@ textarea {
 
 .hero-grid {
   display: grid;
-  grid-template-columns: minmax(0, 0.78fr) minmax(520px, 1fr);
+  grid-template-columns: minmax(0, 0.78fr) minmax(470px, 1fr);
   gap: clamp(2rem, 4vw, 4.5rem);
   align-items: center;
   min-height: calc(100svh - 142px);
@@ -302,6 +303,8 @@ h3 {
   font-family: Manrope, Inter, ui-sans-serif, system-ui, sans-serif;
   letter-spacing: 0;
   line-height: 0.98;
+  overflow-wrap: normal;
+  text-wrap: balance;
 }
 
 h1 {
@@ -359,8 +362,8 @@ p {
 
 .hero-media img {
   width: 100%;
-  height: min(58vw, 520px);
-  min-height: 380px;
+  height: clamp(340px, 46vw, 520px);
+  min-height: 0;
   object-fit: cover;
   transform: scale(1.025);
   opacity: 0;
@@ -514,7 +517,7 @@ p {
 }
 
 .card-image {
-  height: 225px;
+  height: clamp(180px, 18vw, 225px);
   overflow: hidden;
   background: var(--soft);
 }
@@ -844,7 +847,7 @@ textarea {
   }
 }
 
-@media (max-width: 860px) {
+@media (max-width: 1120px) {
   .shell {
     width: min(100% - 32px, 1240px);
   }
@@ -927,14 +930,31 @@ textarea {
   }
 }
 
+@media (min-width: 621px) and (max-width: 1120px) {
+  .hero-actions .button {
+    width: auto;
+  }
+
+  .card-image {
+    height: 240px;
+  }
+}
+
 @media (max-width: 620px) {
+  .shell {
+    width: min(100% - 28px, 1240px);
+  }
+
   .hero {
     padding-top: 10px;
   }
 
+  .hero-copy {
+    padding-block: 2rem;
+  }
+
   .hero-media img {
-    min-height: 280px;
-    height: 72vw;
+    height: clamp(240px, 72vw, 340px);
   }
 
   .project-grid,
@@ -953,8 +973,38 @@ textarea {
   }
 
   .hero-actions .button,
-  .button.primary.wide {
+  .button.primary.wide,
+  .button.secondary {
     width: 100%;
+  }
+
+  .section {
+    padding-block: 3.75rem;
+    scroll-margin-top: 92px;
+  }
+
+  .section-head {
+    gap: 1rem;
+    margin-bottom: 1.4rem;
+  }
+
+  .eyebrow {
+    letter-spacing: 0.18em;
+  }
+
+  h1 {
+    max-width: 8.5ch;
+  }
+
+  h2 {
+    max-width: 12ch;
+  }
+
+  .story-card,
+  .people-grid article,
+  .card-body,
+  .form-card {
+    padding: 1rem;
   }
 
   .partner-image::after {
