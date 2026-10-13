@@ -1,58 +1,72 @@
 import { access, readFile, readdir } from "node:fs/promises";
 import { dirname, extname, resolve } from "node:path";
+import { routePaths } from "./site.mjs";
 
 const root = resolve(import.meta.dirname, "..");
-const htmlFiles = [resolve(root, "index.html")];
+const output = resolve(root, "dist");
+const failures = [];
 
-for (const name of await readdir(resolve(root, "projects"))) {
-  if (extname(name) === ".html") htmlFiles.push(resolve(root, "projects", name));
+async function walk(dir) {
+  const files = [];
+  for (const entry of await readdir(dir, { withFileTypes: true })) {
+    const path = resolve(dir, entry.name);
+    if (entry.isDirectory()) files.push(...await walk(path));
+    else files.push(path);
+  }
+  return files;
 }
 
-const failures = [];
-const banned = [
-  /music\s*&(?:amp;)?\s*arts/i,
-  /approved wording is pending/i,
-  /can be added when confirmed/i,
-  /public profiles can be added/i,
-  /a working story category/i,
-  /the approved url can be supplied/i,
-  /-&gt;/i,
-  /->/,
-];
+function localTarget(fromFile, value) {
+  const path = value.split(/[?#]/)[0];
+  if (path.startsWith("/")) {
+    if (extname(path)) return resolve(output, path.slice(1));
+    return path === "/" ? resolve(output, "index.html") : resolve(output, path.slice(1), "index.html");
+  }
+  return resolve(dirname(fromFile), path);
+}
+
+const htmlFiles = (await walk(output)).filter((file) => extname(file) === ".html");
+const banned = [/music\s*&(?:amp;)?\s*arts/i, /four (?:projects|areas)/i, /-&gt;/i, /->/];
 
 for (const file of htmlFiles) {
   const html = await readFile(file, "utf8");
-  for (const pattern of banned) {
-    if (pattern.test(html)) failures.push(`${file}: banned public copy matches ${pattern}`);
-  }
-
+  const redirect = /Page moved/.test(html);
+  for (const pattern of banned) if (pattern.test(html)) failures.push(`${file}: banned public content ${pattern}`);
+  if (!/<title>[^<]+<\/title>/.test(html)) failures.push(`${file}: missing title`);
+  if (!/<meta name="description" content="[^"]+"/.test(html) && !redirect) failures.push(`${file}: missing meta description`);
   const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
-  for (const id of new Set(ids)) {
-    if (ids.filter((candidate) => candidate === id).length > 1) failures.push(`${file}: duplicate id ${id}`);
-  }
+  for (const id of new Set(ids)) if (ids.filter((candidate) => candidate === id).length > 1) failures.push(`${file}: duplicate id ${id}`);
 
   for (const match of html.matchAll(/<(?:a|img|link|script)\b[^>]*?\s(?:href|src)="([^"]+)"/g)) {
     const target = match[1];
-    if (/^(?:#|https?:|mailto:|tel:|data:)/.test(target)) continue;
-    const path = target.split(/[?#]/)[0];
-    try { await access(resolve(dirname(file), path)); } catch { failures.push(`${file}: missing local target ${target}`); }
+    if (/^(?:#|https?:|mailto:|tel:|data:)/.test(target) || !target.split(/[?#]/)[0]) continue;
+    try { await access(localTarget(file, target)); } catch { failures.push(`${file}: missing local target ${target}`); }
+  }
+  for (const match of html.matchAll(/<img\b([^>]*)>/g)) {
+    if (!/\balt="[^"]*"/.test(match[1])) failures.push(`${file}: image missing alt`);
+    if (!/\bwidth="\d+"/.test(match[1]) || !/\bheight="\d+"/.test(match[1])) failures.push(`${file}: image missing dimensions`);
   }
 
-  for (const match of html.matchAll(/<img\b([^>]*)>/g)) {
-    const attributes = match[1];
-    if (!/\balt="[^"]*"/.test(attributes)) failures.push(`${file}: image missing alt`);
-    if (!/\bwidth="\d+"/.test(attributes) || !/\bheight="\d+"/.test(attributes)) failures.push(`${file}: image missing explicit dimensions`);
+  if (!redirect) {
+    const header = html.match(/<header\b[\s\S]*?<\/header>/)?.[0] || "";
+    if (/TNFA|New Frontier/i.test(header)) failures.push(`${file}: TNFA appears in the header`);
+    if (/About TUF|Our Projects/.test(header)) failures.push(`${file}: old header label remains`);
+    for (const label of ["Home", "About", "Projects", "Contact", "Become a Partner"]) if (!header.includes(label)) failures.push(`${file}: header missing ${label}`);
+    for (const label of ["All Projects", "TUF Tech Academy", "Students in Tech", "Women in Tech", "Older Adults in Tech", "Smiling Children Project"]) if (!header.includes(label)) failures.push(`${file}: project navigation missing ${label}`);
   }
 }
 
-const index = await readFile(resolve(root, "index.html"), "utf8");
-const projectCards = (index.match(/class="project-card"/g) || []).length;
-if (projectCards !== 3) failures.push(`index.html: expected 3 project cards, found ${projectCards}`);
-if (/id="(?:stories|people)"/.test(index)) failures.push("index.html: unpublished stories or people section remains");
+for (const route of routePaths) {
+  const file = route === "/" ? resolve(output, "index.html") : resolve(output, route.slice(1), "index.html");
+  try { await access(file); } catch { failures.push(`missing route ${route}`); }
+}
+for (const required of ["404.html", "robots.txt"]) {
+  try { await access(resolve(output, required)); } catch { failures.push(`missing ${required}`); }
+}
 
 if (failures.length) {
   console.error(failures.join("\n"));
   process.exitCode = 1;
 } else {
-  console.log(`Checked ${htmlFiles.length} HTML files: all local targets, image metadata, IDs, and public-content assertions passed.`);
+  console.log(`Checked ${htmlFiles.length} HTML files and ${routePaths.length} routes: navigation, links, metadata, images, 404, and public-content assertions passed.`);
 }
