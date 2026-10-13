@@ -12,14 +12,25 @@ node -e "const http=require('http'),fs=require('fs'),path=require('path');const 
 
 Then open `http://127.0.0.1:4173`.
 
+## Checks and build
+
+```sh
+npm run check
+npm run build
+```
+
+The build recreates `dist/` with only the files and assets used by the public site. It does not deploy the site.
+
 ## Structure
 
 - `index.html` - main page markup
 - `styles.css` - visual design, responsive layout, and motion
-- `script.js` - project cards, story filtering, dialogs, mobile menu, and form draft handling
+- `script.js` - progressive motion, navigation enhancement, configured links, image fallback, and email-draft handling
+- `projects/` - dedicated project detail pages
+- `tools/` - dependency-free static checks and build script
 - `assets/` - logo and website imagery
 - `dist/` - static output used by the existing Sites deployment setup
 
 ## Content Notes
 
-The site avoids unapproved impact statistics, team profiles, payment details, and testimonials. Replace placeholder-safe copy with approved TUF content when available.
+See `CONTENT_DEPENDENCIES.md` for launch dependencies and omitted unapproved content.

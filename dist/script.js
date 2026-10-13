@@ -1,231 +1,27 @@
-const projects = [
-  {
-    slug: "tnfa",
-    name: "The New Frontier Africa",
-    kicker: "Leadership",
-    summary: "Developing leaders for a stronger, more inclusive Africa.",
-    imageClass: "slice-leadership",
-    imageAlt: "A mentor speaking with young adults in a leadership discussion",
-    detailTitle: "The New Frontier Africa Leadership Summit",
-    detail:
-      "The New Frontier Africa Leadership Summit is presented as a TUF initiative with its own dedicated website journey. TUF remains the foundation home while TNFA carries its programme identity.",
-    points: [
-      "Leadership-focused initiative under The Unlimited Foundation.",
-      "Dedicated TNFA website link can be added when the approved URL is available.",
-      "Registration and programme details should remain on the approved TNFA destination.",
-    ],
-  },
-  {
-    slug: "tech-academy",
-    name: "TUF Tech Academy",
-    kicker: "Technology",
-    summary: "Building digital skills and opportunities for tomorrow.",
-    imageClass: "slice-tech",
-    imageAlt: "Students working on laptops in a learning environment",
-    detailTitle: "TUF Tech Academy",
-    detail:
-      "TUF Tech Academy is the foundation's technology skills pathway. Public course details can be expanded as training offers, eligibility, dates, and participation routes are confirmed.",
-    points: [
-      "Technology training and digital skills focus.",
-      "Programme availability and delivery model can be added when confirmed.",
-      "Participant enquiries route through the TUF contact journey.",
-    ],
-  },
-  {
-    slug: "music-arts",
-    name: "Music & Arts",
-    kicker: "Music & Arts",
-    summary: "Nurturing creative talent and cultural expression.",
-    imageClass: "slice-arts",
-    imageAlt: "A young musician practicing guitar in a creative setting",
-    detailTitle: "Music & Arts",
-    detail:
-      "Music & Arts gives TUF room to support creative expression, cultural confidence, and practical artistic development through approved activities.",
-    points: [
-      "Creative expression and talent development.",
-      "Activities can include approved music, arts, mentorship, or showcases.",
-      "Participant images and stories should be published only with permission.",
-    ],
-  },
-  {
-    slug: "smiling-children",
-    name: "Smiling Children Project",
-    kicker: "Children & Community",
-    summary: "Supporting brighter futures for children and communities.",
-    imageClass: "slice-children",
-    imageAlt: "Children smiling in a community setting",
-    detailTitle: "Smiling Children Project",
-    detail:
-      "Smiling Children Project is TUF's child-focused community support initiative. The public site keeps the purpose visible while avoiding sensitive beneficiary details.",
-    points: [
-      "Child-focused support within the TUF family of initiatives.",
-      "Public content should protect beneficiary dignity and privacy.",
-      "Support needs can be added after TUF confirms the programme model.",
-    ],
-  },
-];
+const siteSettings = Object.freeze({
+  tnfaWebsiteUrl: "",
+  contactEmail: "",
+});
 
-const stories = [
-  {
-    category: "Graduates",
-    title: "Graduates",
-    summary: "Stories about learners completing a programme and moving into their next opportunity.",
-  },
-  {
-    category: "Business Owners",
-    title: "Business Owners",
-    summary: "Narratives from entrepreneurs and community builders shaped by TUF support.",
-  },
-  {
-    category: "Tech Innovators",
-    title: "Tech Innovators",
-    summary: "Technology pathways connected to training, practice, and practical outcomes.",
-  },
-  {
-    category: "Skill Merchants",
-    title: "Skill Merchants",
-    summary: "A working story category ready for TUF's preferred public wording and examples.",
-  },
-];
-
-const projectMount = document.querySelector("[data-projects]");
-const storyMount = document.querySelector("[data-stories]");
-const dialog = document.querySelector("[data-dialog]");
-const dialogContent = document.querySelector("[data-dialog-content]");
 const header = document.querySelector("[data-header]");
-const menuToggle = document.querySelector(".menu-toggle");
-const menu = document.querySelector("#site-menu");
-let lastFocusedElement = null;
+const menu = document.querySelector("[data-menu]");
+const contactForm = document.querySelector('[data-form="contact"]');
+const mobileNavigation = window.matchMedia("(max-width: 1040px)");
 
-function renderProjects() {
-  projectMount.innerHTML = projects
-    .map(
-      (project) => `
-        <article class="project-card">
-          <div class="card-image image-slice ${project.imageClass}">
-            <img src="assets/programme-montage.png" alt="${project.imageAlt}" loading="lazy" />
-          </div>
-          <div class="card-body">
-            <p class="card-kicker">${project.kicker}</p>
-            <h3>${project.name}</h3>
-            <p>${project.summary}</p>
-            <button class="card-button" type="button" data-project="${project.slug}">
-              Learn more <span aria-hidden="true">-&gt;</span>
-            </button>
-          </div>
-        </article>
-      `,
-    )
-    .join("");
+function isConstrainedConnection() {
+  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  return Boolean(connection?.saveData || ["slow-2g", "2g"].includes(connection?.effectiveType));
 }
 
-function renderStories(category = "all") {
-  const visible = category === "all" ? stories : stories.filter((story) => story.category === category);
-  storyMount.innerHTML = visible.length
-    ? visible
-        .map(
-          (story) => `
-          <article class="story-card">
-            <p class="pill">${story.category}</p>
-            <h3>${story.title}</h3>
-            <p>${story.summary}</p>
-            <button class="card-button" type="button" data-story="${story.category}">
-              Story pathway <span aria-hidden="true">-&gt;</span>
-            </button>
-          </article>
-        `,
-        )
-        .join("")
-    : `<article class="story-card empty-state">
-        <h3>No stories in this category yet.</h3>
-        <p>When TUF approves a public story for this pathway, it can appear here.</p>
-      </article>`;
-}
+function setupMotion() {
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const items = [...document.querySelectorAll("[data-reveal]")];
+  if (reducedMotion || isConstrainedConnection() || !("IntersectionObserver" in window)) return;
 
-function showProject(slug) {
-  const project = projects.find((item) => item.slug === slug);
-  if (!project) return;
-
-  lastFocusedElement = document.activeElement;
-  dialogContent.innerHTML = `
-    <div class="dialog-body">
-      <p class="eyebrow">${project.kicker}</p>
-      <h2>${project.detailTitle}</h2>
-      <p>${project.detail}</p>
-      <ul class="dialog-list">
-        ${project.points.map((point) => `<li>${point}</li>`).join("")}
-      </ul>
-      <a class="button secondary" href="#contact">Enquire about this project</a>
-    </div>
-  `;
-  dialog.showModal();
-  document.body.classList.add("dialog-open");
-}
-
-function showStory(category) {
-  const story = stories.find((item) => item.category === category);
-  if (!story) return;
-
-  lastFocusedElement = document.activeElement;
-  dialogContent.innerHTML = `
-    <div class="dialog-body">
-      <p class="eyebrow">Success Stories</p>
-      <h2>${story.title}</h2>
-      <p>${story.summary}</p>
-      <ul class="dialog-list">
-        <li>Each story can connect to a related TUF initiative.</li>
-        <li>Public attribution and media should be used only with permission.</li>
-        <li>Outcome claims should stay specific and verifiable.</li>
-      </ul>
-      <a class="button secondary" href="#contact">Share a story with TUF</a>
-    </div>
-  `;
-  dialog.showModal();
-  document.body.classList.add("dialog-open");
-}
-
-function prepareEmail(form, subjectPrefix) {
-  const status = form.querySelector(".form-status");
-  const data = new FormData(form);
-  const invalid = [...form.elements].some((element) => {
-    if (!element.checkValidity || element.checkValidity()) return false;
-    element.reportValidity();
-    return true;
+  items.forEach((item) => {
+    if (item.getBoundingClientRect().top > window.innerHeight * 0.92) item.classList.add("can-reveal");
   });
-
-  if (invalid) {
-    status.textContent = "Please complete the required fields before preparing the enquiry.";
-    return;
-  }
-
-  const lines = [...data.entries()]
-    .filter(([, value]) => String(value).trim())
-    .map(([key, value]) => `${key}: ${value}`);
-  const subject = encodeURIComponent(`${subjectPrefix}: ${data.get("name")}`);
-  const body = encodeURIComponent(lines.join("\n"));
-  status.innerHTML = `Your enquiry is ready. <a href="mailto:?subject=${subject}&body=${body}">Open it in your email app</a>.`;
-}
-
-function closeMenu() {
-  header.classList.remove("open");
-  document.body.classList.remove("menu-open");
-  menuToggle.setAttribute("aria-expanded", "false");
-}
-
-function openMenu() {
-  header.classList.add("open");
-  document.body.classList.add("menu-open");
-  menuToggle.setAttribute("aria-expanded", "true");
-  menu.querySelector("a")?.focus();
-}
-
-function setupRevealMotion() {
-  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const revealItems = document.querySelectorAll("[data-reveal]");
-  if (reduced || !("IntersectionObserver" in window)) {
-    revealItems.forEach((item) => item.classList.add("is-visible"));
-    return;
-  }
+  document.documentElement.classList.add("motion-ready");
 
   const observer = new IntersectionObserver(
     (entries) => {
@@ -235,90 +31,128 @@ function setupRevealMotion() {
         observer.unobserve(entry.target);
       });
     },
-    { threshold: 0.16 },
+    { rootMargin: "0px 0px -8%", threshold: 0.06 },
   );
-  revealItems.forEach((item) => observer.observe(item));
+
+  items.filter((item) => item.classList.contains("can-reveal")).forEach((item) => observer.observe(item));
+
+  const revealHashTarget = () => {
+    const target = window.location.hash && document.querySelector(window.location.hash);
+    target?.closest("[data-reveal]")?.classList.add("is-visible");
+  };
+  window.addEventListener("hashchange", revealHashTarget);
+  revealHashTarget();
 }
 
-function updateHeader() {
-  header.classList.toggle("is-scrolled", window.scrollY > 8);
+function closeMenu() {
+  if (mobileNavigation.matches && menu?.open) menu.open = false;
 }
 
-function updateParallax() {
-  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const media = document.querySelector("[data-parallax] img");
-  if (!media || reduced || window.innerWidth < 900) return;
-  const rect = media.getBoundingClientRect();
-  const progress = Math.max(-1, Math.min(1, (rect.top + rect.height / 2 - window.innerHeight / 2) / window.innerHeight));
-  const offset = Math.round(progress * -18);
-  media.style.transform = `translateY(${offset}px) scale(1)`;
+function syncMenuBreakpoint(event) {
+  if (!menu) return;
+  menu.open = !event.matches;
 }
 
-renderProjects();
-renderStories();
-setupRevealMotion();
-updateHeader();
+function preselectPartnership() {
+  const type = contactForm?.elements.namedItem("type");
+  if (type) type.value = "Partnership";
+}
+
+function applyQueryPrefill() {
+  if (!contactForm) return;
+  const params = new URLSearchParams(window.location.search);
+  const type = params.get("type");
+  const project = params.get("project");
+  const typeField = contactForm.elements.namedItem("type");
+  const projectField = contactForm.elements.namedItem("project");
+  const typeMap = { general: "General", programme: "Programme", volunteering: "Volunteering", partnership: "Partnership" };
+  const projectMap = {
+    tnfa: "The New Frontier Africa",
+    "tech-academy": "TUF Tech Academy",
+    "smiling-children": "Smiling Children Project",
+  };
+  if (typeField && typeMap[type]) typeField.value = typeMap[type];
+  if (projectField && projectMap[project]) projectField.value = projectMap[project];
+}
+
+function installConfiguredLinks() {
+  if (!siteSettings.tnfaWebsiteUrl) return;
+  let url;
+  try {
+    url = new URL(siteSettings.tnfaWebsiteUrl);
+    if (!/^https:$/.test(url.protocol)) return;
+  } catch {
+    return;
+  }
+
+  document.querySelectorAll("[data-tnfa-website-slot]").forEach((slot) => {
+    const link = document.createElement("a");
+    link.className = "button dark";
+    link.href = url.href;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = "Visit TNFA Website";
+    slot.append(link);
+  });
+}
+
+function prepareEmailDraft(form) {
+  const status = form.querySelector(".form-status");
+  if (!form.checkValidity()) {
+    form.reportValidity();
+    status.textContent = "Complete the required fields before opening an email draft.";
+    return;
+  }
+
+  const data = new FormData(form);
+  const lines = [...data.entries()]
+    .filter(([, value]) => String(value).trim())
+    .map(([key, value]) => `${key[0].toUpperCase()}${key.slice(1)}: ${String(value).trim()}`);
+  const subject = `TUF ${data.get("type")} enquiry from ${data.get("name")}`;
+  const recipient = siteSettings.contactEmail.trim();
+  const draftUrl = `mailto:${encodeURIComponent(recipient)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join("\n"))}`;
+
+  status.textContent = recipient
+    ? "An email draft was requested. Review and send it from your email application."
+    : "An email draft was requested. Add the approved TUF recipient, then review and send it from your email application.";
+  window.location.href = draftUrl;
+}
+
+document.querySelectorAll("[data-image]").forEach((image) => {
+  image.addEventListener("error", () => image.closest("[data-image-container]")?.classList.add("image-failed"));
+});
+
+document.querySelectorAll("[data-partnership]").forEach((link) => link.addEventListener("click", preselectPartnership));
+document.querySelectorAll(".site-nav a").forEach((link) => link.addEventListener("click", closeMenu));
+mobileNavigation.addEventListener("change", syncMenuBreakpoint);
 
 document.addEventListener("click", (event) => {
-  const projectButton = event.target.closest("[data-project]");
-  const storyButton = event.target.closest("[data-story]");
-  const filterButton = event.target.closest("[data-filter]");
-
-  if (projectButton) showProject(projectButton.dataset.project);
-  if (storyButton) showStory(storyButton.dataset.story);
-
-  if (filterButton) {
-    document.querySelectorAll("[data-filter]").forEach((button) => button.classList.remove("active"));
-    filterButton.classList.add("active");
-    renderStories(filterButton.dataset.filter);
-  }
-});
-
-document.querySelector("[data-close]").addEventListener("click", () => {
-  dialog.close();
-});
-
-dialog.addEventListener("close", () => {
-  document.body.classList.remove("dialog-open");
-  lastFocusedElement?.focus?.();
-});
-
-menuToggle.addEventListener("click", () => {
-  if (header.classList.contains("open")) {
-    closeMenu();
-  } else {
-    openMenu();
-  }
-});
-
-document.querySelectorAll(".site-nav a").forEach((link) => {
-  link.addEventListener("click", closeMenu);
+  if (menu?.open && !menu.contains(event.target)) closeMenu();
 });
 
 document.addEventListener("keydown", (event) => {
-  if (event.key !== "Escape") return;
-  if (header.classList.contains("open")) {
+  if (event.key === "Escape" && menu?.open) {
     closeMenu();
-    menuToggle.focus();
+    menu.querySelector("summary")?.focus();
   }
-  if (dialog.open) dialog.close();
 });
 
-document.querySelectorAll("[data-form]").forEach((form) => {
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
-    prepareEmail(form, "TUF enquiry");
-  });
+contactForm?.addEventListener("submit", (event) => {
+  event.preventDefault();
+  prepareEmailDraft(contactForm);
 });
 
-window.addEventListener(
-  "scroll",
-  () => {
-    updateHeader();
-    updateParallax();
-  },
-  { passive: true },
-);
+document.querySelectorAll("[data-year]").forEach((item) => {
+  item.textContent = String(new Date().getFullYear());
+});
 
-window.addEventListener("resize", updateParallax);
-window.addEventListener("load", updateParallax);
+function updateHeader() {
+  header?.classList.toggle("is-scrolled", window.scrollY > 8);
+}
+
+window.addEventListener("scroll", updateHeader, { passive: true });
+syncMenuBreakpoint(mobileNavigation);
+applyQueryPrefill();
+installConfiguredLinks();
+setupMotion();
+updateHeader();
