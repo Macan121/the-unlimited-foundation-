@@ -49,10 +49,17 @@ for (const file of htmlFiles) {
 
   if (!redirect) {
     const header = html.match(/<header\b[\s\S]*?<\/header>/)?.[0] || "";
-    if (/TNFA|New Frontier/i.test(header)) failures.push(`${file}: TNFA appears in the header`);
+    const tnfaMenuLinks = header.match(/href="\/projects\/tnfa\/"/g)?.length || 0;
+    if (tnfaMenuLinks !== 2) failures.push(`${file}: TNFA must appear once in each Projects menu and nowhere else in the header`);
+    const desktopMenu = header.match(/class="project-dropdown"[\s\S]*?<\/div>/)?.[0] || "";
+    const mobileMenu = header.match(/class="mobile-project-links"[\s\S]*?<\/div>/)?.[0] || "";
+    for (const [name, menu] of [["desktop", desktopMenu], ["mobile", mobileMenu]]) {
+      if (!menu.includes('href="/projects/tnfa/"')) failures.push(`${file}: ${name} Projects menu missing TNFA`);
+      if (menu.indexOf('href="/projects/tnfa/"') > menu.indexOf('href="/projects/"')) failures.push(`${file}: TNFA is not first in the ${name} Projects menu`);
+    }
     if (/About TUF|Our Projects/.test(header)) failures.push(`${file}: old header label remains`);
     for (const label of ["Home", "About", "Projects", "Contact", "Become a Partner"]) if (!header.includes(label)) failures.push(`${file}: header missing ${label}`);
-    for (const label of ["All Projects", "TUF Tech Academy", "Students in Tech", "Women in Tech", "Older Adults in Tech", "Smiling Children Project"]) if (!header.includes(label)) failures.push(`${file}: project navigation missing ${label}`);
+    for (const label of ["The New Frontier Africa", "All Projects", "TUF Tech Academy", "Students in Tech", "Women in Tech", "Older Adults in Tech", "Smiling Children Project"]) if (!header.includes(label)) failures.push(`${file}: project navigation missing ${label}`);
   }
 }
 

@@ -9,6 +9,7 @@ export const routePaths = [
 
 const projectMenu = (mobile = false) => `
   <div class="${mobile ? "mobile-project-links" : "project-dropdown"}" ${mobile ? "" : 'id="projects-menu" aria-label="Project navigation"'}>
+    <a class="menu-project" href="/projects/tnfa/">The New Frontier Africa ${arrow}</a>
     <a class="all-projects-link" href="/projects/">All Projects</a>
     <div class="menu-group">
       <a class="menu-project" href="/projects/tech-academy/">TUF Tech Academy ${arrow}</a>
