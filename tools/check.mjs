@@ -60,8 +60,14 @@ for (const file of htmlFiles) {
     if (/About TUF|Our Projects/.test(header)) failures.push(`${file}: old header label remains`);
     for (const label of ["Home", "About", "Projects", "Contact", "Become a Partner"]) if (!header.includes(label)) failures.push(`${file}: header missing ${label}`);
     for (const label of ["The New Frontier Africa", "All Projects", "TUF Tech Academy", "Students in Tech", "Women in Tech", "Older Adults in Tech", "Smiling Children Project"]) if (!header.includes(label)) failures.push(`${file}: project navigation missing ${label}`);
+    for (const contactHref of ["mailto:theunlimitedfoundationsl@gmail.com", "tel:+232880563", "tel:+23278003621"]) if (!html.includes(`href="${contactHref}"`)) failures.push(`${file}: footer missing ${contactHref}`);
   }
 }
+
+const tnfaHtml = await readFile(resolve(output, "projects", "tnfa", "index.html"), "utf8");
+if (!tnfaHtml.includes('href="https://tnfa.vercel.app"')) failures.push("TNFA page missing dedicated website link");
+const contactHtml = await readFile(resolve(output, "contact", "index.html"), "utf8");
+if (!contactHtml.includes('"contactEmail":"theunlimitedfoundationsl@gmail.com"')) failures.push("contact form is missing the default recipient");
 
 for (const route of routePaths) {
   const file = route === "/" ? resolve(output, "index.html") : resolve(output, route.slice(1), "index.html");

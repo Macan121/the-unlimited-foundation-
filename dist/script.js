@@ -63,15 +63,7 @@ function installConfiguredLinks() {
     url = new URL(siteSettings.tnfaWebsiteUrl);
     if (url.protocol !== "https:") return;
   } catch { return; }
-  document.querySelectorAll("[data-tnfa-website-slot]").forEach((slot) => {
-    const link = document.createElement("a");
-    link.className = "button dark";
-    link.href = url.href;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    link.textContent = "Visit TNFA Website";
-    slot.append(link);
-  });
+  document.querySelectorAll("[data-tnfa-website-link]").forEach((link) => { link.href = url.href; });
 }
 
 function prepareEmailDraft(form) {

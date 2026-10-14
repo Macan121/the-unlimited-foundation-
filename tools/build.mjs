@@ -1,14 +1,14 @@
 import { cp, mkdir, rm, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import { legacyRedirects, pages, render404, renderPage } from "./site.mjs";
+import { legacyRedirects, pages, publicSiteDetails, render404, renderPage } from "./site.mjs";
 
 const root = resolve(import.meta.dirname, "..");
 const output = resolve(root, "dist");
 const siteUrl = (process.env.TUF_SITE_URL || "").replace(/\/$/, "");
 const settings = {
   siteUrl,
-  tnfaWebsiteUrl: process.env.TUF_TNFA_URL || "",
-  contactEmail: process.env.TUF_CONTACT_EMAIL || "",
+  tnfaWebsiteUrl: process.env.TUF_TNFA_URL || publicSiteDetails.tnfaWebsiteUrl,
+  contactEmail: process.env.TUF_CONTACT_EMAIL || publicSiteDetails.contactEmail,
 };
 const publishedAssets = [
   "favicon.svg", "children-project.jpg", "foundation-intro.jpg", "hero-programme.jpg",

@@ -249,6 +249,10 @@ p { margin: 0; }
 .contact-copy .eyebrow { margin-bottom: -0.4rem; }
 .contact-copy p { max-width: 35rem; color: var(--muted); }
 .contact-copy .contact-note { padding-left: 1rem; border-left: 3px solid var(--orange); color: var(--ink); font-size: 0.95rem; }
+.contact-details { display: grid; gap: 1rem; font-style: normal; }
+.contact-details div { display: grid; gap: 0.3rem; }
+.contact-details span { color: var(--muted); font-size: 0.78rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+.contact-details a { width: fit-content; min-height: 36px; color: var(--orange-dark); font-weight: 750; overflow-wrap: anywhere; text-underline-offset: 0.18em; }
 .form-card { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; padding: clamp(1.25rem, 3vw, 2rem); border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--white); box-shadow: 0 16px 40px rgba(17, 17, 17, 0.06); }
 label { display: grid; gap: 0.45rem; min-width: 0; font-weight: 750; }
 label span, .form-help, .form-status { color: var(--muted); font-size: 0.88rem; font-weight: 500; }
@@ -271,6 +275,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--focus); outline:
 .footer-column a { min-height: 38px; color: #c4c1bc; overflow-wrap: anywhere; text-decoration: none; }
 .footer-column a:hover, .footer-column a:focus-visible { color: #ff9948; }
 .footer-column p { color: #aaa7a2; overflow-wrap: anywhere; }
+.footer-contact-list { display: grid; gap: 0.35rem; font-style: normal; }
 .footer-contact { border-bottom: 1px solid var(--orange); }
 .footer-bottom { display: flex; align-items: center; justify-content: space-between; gap: 2rem; padding-block: 1.25rem; border-top: 1px solid #383838; color: #aaa7a2; font-size: 0.86rem; }
 .back-to-top { display: inline-flex; min-height: 42px; align-items: center; gap: 0.4rem; color: var(--white); text-decoration: none; white-space: nowrap; }
@@ -464,6 +469,8 @@ input:focus, select:focus, textarea:focus { border-color: var(--focus); outline:
 .prose { display: grid; gap: 1.15rem; max-width: 47rem; color: var(--muted); }
 .prose .button { margin-top: 0.5rem; }
 .action-band { display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
+.action-band > div:first-child { max-width: 47rem; }
+.action-copy { max-width: 43rem; margin-top: 0.8rem; color: var(--muted); }
 .pathway-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
 .pathway-grid > a { display: grid; gap: 0.8rem; min-height: 14rem; align-content: end; padding: 1.5rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--white); text-decoration: none; transition: transform 160ms var(--ease), box-shadow 160ms var(--ease), border-color 160ms var(--ease); }
 .pathway-grid > a:hover, .pathway-grid > a:focus-visible { border-color: var(--orange); transform: translateY(-2px); box-shadow: var(--shadow); }

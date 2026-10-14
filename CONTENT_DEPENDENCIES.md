@@ -2,12 +2,15 @@
 
 This file is private project documentation and is not copied into `dist`.
 
+## Confirmed public details
+
+- **TNFA website URL:** `https://tnfa.vercel.app` is the default public destination. `TUF_TNFA_URL` may override it at build time. The external TNFA site currently identifies itself as an initiative of TUF; its codebase is not present in this workspace.
+- **Contact destination:** `theunlimitedfoundationsl@gmail.com` is the default recipient. `TUF_CONTACT_EMAIL` may override it at build time. The current form only opens a local email draft and does not transmit or store data.
+- **Official contact information:** the public footer and contact page list `theunlimitedfoundationsl@gmail.com`, `+232 88 0563`, and `+232 78 003621` as supplied by the site owner.
+
 ## Required before the related public feature can be enabled
 
-- **TNFA website URL:** set `TUF_TNFA_URL` to the verified HTTPS destination when building. The external action is omitted while this value is empty. The TNFA codebase is not present in this workspace, so the reciprocal TNFA-to-TUF link remains a separate task.
-- **Contact destination:** set `TUF_CONTACT_EMAIL` to the approved TUF recipient when building, or replace the draft-only workflow with an approved server endpoint and credentials. The current form only opens a local email draft and does not transmit or store data.
 - **Server form facts:** if a backend is introduced, document its recipient, storage location, retention period, privacy notice, server-side validation, spam protection, and rate limiting before describing those behaviors publicly.
-- **Official contact information:** approved email, phone number(s), location, and social profile URLs are not present in the repository or supplied materials, so they are omitted from the footer.
 - **Smiling Children Project:** detailed activities are not confirmed; its public page shows only the confirmed project identity and a coming-soon message.
 - **Stories and people:** no approved stories, names, roles, biographies, or photographs were supplied. Both sections and their navigation links are omitted.
 - **Mission and vision:** no approved statements were supplied. The site does not invent them.
